@@ -11,6 +11,7 @@ class Settings(BaseSettings):
 
     USE_RANDOM_DELAY_IN_RUN: bool = False
     RANDOM_DELAY_IN_RUN: list[int] = [3, 29800]
+    SLEEP_BETWEEN_CLAIM: tuple[int, int] = (360, 540)
 
     CLAIM_RETRY: int = 1
 

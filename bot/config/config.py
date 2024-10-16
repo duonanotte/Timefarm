@@ -20,5 +20,7 @@ class Settings(BaseSettings):
 
     SLEEP_TIME: list[int] = [31000, 42000]
 
+    USE_PROXY: bool = False
+
 
 settings = Settings()

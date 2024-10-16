@@ -3,6 +3,7 @@ import glob
 import asyncio
 import argparse
 import json
+import traceback
 
 from pyrogram import Client
 from bot.config import settings
@@ -36,10 +37,16 @@ async def smooth_progress(description, total_steps=100, duration=5):
 def display_menu(choices, session_count, proxy_count):
     console = Console()
 
-    menu_text = "\n".join([f"[cyan][{i}][/cyan] {choice}" for i, choice in enumerate(choices, 1)])
+    menu_text = "\n".join([f"[red][{i}][/red] {choice}" for i, choice in enumerate(choices, 1)])
+
+    proxy_info = (
+        f"🛡️  Detected [cyan]{session_count}[/cyan] sessions and [cyan]{proxy_count}[/cyan] proxies"
+        if settings.USE_PROXY else
+        f"🛡️  Detected [cyan]{session_count}[/cyan] sessions (running without proxies)"
+    )
 
     panel_content = (
-        f"🛡️  Detected [cyan]{session_count}[/cyan] sessions and [cyan]{proxy_count}[/cyan] proxies\n\n"
+        f"{proxy_info}\n\n"
         f"{menu_text}"
     )
 
@@ -47,7 +54,7 @@ def display_menu(choices, session_count, proxy_count):
         panel_content,
         title="Session Information",
         title_align="center",
-        border_style="dim cyan",
+        border_style="dim red",
         style="bold white",
         padding=(1, 4),
     )
@@ -88,6 +95,8 @@ async def get_tg_clients() -> list[Client]:
     if not settings.API_ID or not settings.API_HASH:
         raise ValueError("API_ID and API_HASH not found in the .env file.")
 
+    proxies = get_proxies() if settings.USE_PROXY else {}
+
     tg_clients = [
         Client(
             name=session_name,
@@ -95,6 +104,7 @@ async def get_tg_clients() -> list[Client]:
             api_hash=settings.API_HASH,
             workdir="sessions/",
             plugins=dict(root="bot/plugins"),
+            proxy=proxies.get(session_name)
         )
         for session_name in session_names
     ]
@@ -187,12 +197,12 @@ async def process() -> None:
 
 async def run_tasks(tg_clients: list[Client]):
     console = Console()
-    proxies = get_proxies()
+    proxies = get_proxies() if settings.USE_PROXY else()
     tasks = [
         asyncio.create_task(
             run_tapper(
                 tg_client=tg_client,
-                proxy=proxies.get(tg_client.name)
+                proxy=proxies.get(tg_client.name) if settings.USE_PROXY else None
             )
         )
         for tg_client in tg_clients
@@ -203,7 +213,9 @@ async def run_tasks(tg_clients: list[Client]):
     except asyncio.CancelledError:
         console.clear()
     except Exception as e:
-        logger.error(f"Error in tasks: {e}")
+        error_msg = f"Error in tasks: {e}\n\nTraceback:\n{traceback.format_exc()}"
+        logger.error(error_msg)
+        console.print(Panel(error_msg, title="Error Details", style="bold red"))
     finally:
         logger.info("All tasks completed or stopped. Returning to menu.")
         banner()

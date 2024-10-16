@@ -49,6 +49,7 @@ If you have any questions or need assistance, feel free to join our **community 
 | **AUTO_UPGRADE_FARM**       | <small>Upgrade your farm level `True` or `False`</small>                            |
 | **MAX_UPGRADE_LEVEL**       | <small>Max upgrade farm level `7`</small>                                           |
 | **SLEEP_TIME**              | <small>Time each session sleeps after completing all actions `[21000, 32000]`</small> |
+| **USE_PROXY**               | <small>`True` or `False`(default `False`)</small>                                   |
 
 
 ## Step 1: Preparation

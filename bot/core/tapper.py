@@ -504,42 +504,42 @@ class Tapper:
 
                     access_token_created_time = tm.time()
 
-                    tasks_data = await self.get_tasks_list(http_client=http_client)
+                    # tasks_data = await self.get_tasks_list(http_client=http_client)
 
-                    for task in tasks_data:
-                        task_id = task.get("id")
-                        task_title = task.get("title", "Unknown")
-                        task_type = task.get("type")
-                        if "submission" in task:
-                            status = task["submission"].get("status")
-                            if status == "CLAIMED":
-                                continue
+                    # for task in tasks_data:
+                    #     task_id = task.get("id")
+                    #     task_title = task.get("title", "Unknown")
+                    #     task_type = task.get("type")
+                    #     if "submission" in task:
+                    #         status = task["submission"].get("status")
+                    #         if status == "CLAIMED":
+                    #             continue
 
-                            if status == "COMPLETED":
-                                task_data_claim = await self.task_claim(http_client=http_client, task_id=task_id)
-                                if task_data_claim == "OK":
-                                    logger.success(f"{self.session_name} | Successful claim | "
-                                                   f"Task Title: <g>{task_title}</g>")
-                                    continue
+                    #         if status == "COMPLETED":
+                    #             task_data_claim = await self.task_claim(http_client=http_client, task_id=task_id)
+                    #             if task_data_claim == "OK":
+                    #                 logger.success(f"{self.session_name} | Successful claim | "
+                    #                                f"Task Title: <g>{task_title}</g>")
+                    #                 continue
 
-                        if task_type == "TELEGRAM":
-                            continue
+                    #     if task_type == "TELEGRAM":
+                    #         continue
 
-                        task_data_submiss = await self.task_submiss(http_client=http_client, task_id=task_id)
-                        if task_data_submiss != "OK":
-                            continue
+                    #     task_data_submiss = await self.task_submiss(http_client=http_client, task_id=task_id)
+                    #     if task_data_submiss != "OK":
+                    #         continue
 
-                        task_data_x = await self.get_task_data(http_client=http_client, task_id=task_id)
-                        status = task_data_x.get("submission", {}).get("status")
-                        if status != "COMPLETED":
-                            logger.error(f"{self.session_name} | Task is not completed: {task_title}")
-                            continue
+                    #     task_data_x = await self.get_task_data(http_client=http_client, task_id=task_id)
+                    #     status = task_data_x.get("submission", {}).get("status")
+                    #     if status != "COMPLETED":
+                    #         logger.error(f"{self.session_name} | Task is not completed: {task_title}")
+                    #         continue
 
-                        task_data_claim_x = await self.task_claim(http_client=http_client, task_id=task_id)
-                        if task_data_claim_x == "OK":
-                            logger.success(f"{self.session_name} | Successful claim | "
-                                           f"Task Title: <g>{task_title}</g>")
-                            continue
+                    #     task_data_claim_x = await self.task_claim(http_client=http_client, task_id=task_id)
+                    #     if task_data_claim_x == "OK":
+                    #         logger.success(f"{self.session_name} | Successful claim | "
+                    #                        f"Task Title: <g>{task_title}</g>")
+                    #         continue
 
                 mining_data = await self.get_mining_data(http_client=http_client)
 

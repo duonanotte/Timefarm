@@ -421,7 +421,7 @@ class Tapper:
 
             amount_percent = (amount / balance) * 100
 
-            option_weights = [75, 20, 5]
+            option_weights = [100, 0, 0]
             option_id = random.choices(['1', '2', '3'], weights=option_weights)[0]
 
             staking_response = await http_client.post(

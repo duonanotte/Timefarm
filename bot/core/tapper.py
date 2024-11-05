@@ -149,12 +149,15 @@ class Tapper:
                 except (Unauthorized, UserDeactivated, AuthKeyUnregistered):
                     raise InvalidSession(self.session_name)
 
+            self.refer_id = settings.REF_ID
+
             web_view = await self.tg_client.invoke(RequestWebView(
                 peer=await self.tg_client.resolve_peer('TimeFarmCryptoBot'),
                 bot=await self.tg_client.resolve_peer('TimeFarmCryptoBot'),
                 platform='android',
                 from_bot_menu=False,
-                url='https://tg-tap-miniapp.laborx.io/'
+                url='https://tg-tap-miniapp.laborx.io/',
+                start_param=self.refer_id
             ))
 
             auth_url = web_view.url
